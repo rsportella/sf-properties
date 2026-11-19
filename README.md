@@ -144,7 +144,7 @@ valor vazio (`''`).
 
 ```
 .
-├── index.html                  # página da ferramenta (SEO, meta tags e conteúdo)
+├── index.html                  # página da ferramenta
 ├── manual.html                 # manual passo a passo (painel e aplicação Mule)
 ├── robots.txt
 ├── sitemap.xml
@@ -170,15 +170,6 @@ valor vazio (`''`).
 ├── LICENSE
 └── THIRD-PARTY-NOTICES.md
 ```
-
-## Publicação e SEO
-
-As páginas já vêm com `canonical`, Open Graph, Twitter Card, dados estruturados (JSON-LD) e `sitemap.xml`
-apontando para `https://infosulst.com.br/properties/`. **Se você publicar em outro endereço**, troque essa URL
-nos arquivos `index.html`, `manual.html`, `sitemap.xml` e `robots.txt`.
-
-O `robots.txt` só vale na raiz do domínio. Se o site fica em uma subpasta (`/properties/`), inclua a linha
-`Sitemap:` no `robots.txt` da raiz ou envie o `sitemap.xml` direto no Google Search Console.
 
 ## Desenvolvimento
 
