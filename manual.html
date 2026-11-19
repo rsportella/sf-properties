@@ -1,0 +1,254 @@
+<!doctype html><html lang="pt-BR"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual: Secure Properties no MuleSoft (Mule 4 e CloudHub)</title>
+<meta name="description" content="Passo a passo para criptografar propriedades e usá-las no Mule 4: módulo, YAML, Secure Properties Config, ${secure::...} e a chave no Studio e CloudHub.">
+<meta name="author" content="Rodolfo Portella (RSPortella)">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#2563eb">
+<link rel="canonical" href="https://infosulst.com.br/properties/manual.html">
+<link rel="alternate" hreflang="pt-BR" href="https://infosulst.com.br/properties/manual.html">
+<link rel="alternate" hreflang="x-default" href="https://infosulst.com.br/properties/manual.html">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="MuleSoft Secure Properties Generator">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://infosulst.com.br/properties/manual.html">
+<meta property="og:title" content="Manual: Secure Properties no MuleSoft (Mule 4 e CloudHub)">
+<meta property="og:description" content="Passo a passo para criptografar propriedades e usá-las no Mule 4: módulo, YAML, Secure Properties Config, ${secure::...} e a chave no Studio e CloudHub.">
+<meta property="og:image" content="https://infosulst.com.br/properties/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Manual: Secure Properties no MuleSoft (Mule 4 e CloudHub)">
+<meta name="twitter:description" content="Passo a passo para criptografar propriedades e usá-las no Mule 4: módulo, YAML, Secure Properties Config, ${secure::...} e a chave no Studio e CloudHub.">
+<meta name="twitter:image" content="https://infosulst.com.br/properties/og-image.png">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "@id": "https://infosulst.com.br/properties/manual.html#breadcrumb", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Secure Properties Generator", "item": "https://infosulst.com.br/properties/"}, {"@type": "ListItem", "position": 2, "name": "Manual", "item": "https://infosulst.com.br/properties/manual.html"}]}, {"@type": "TechArticle", "@id": "https://infosulst.com.br/properties/manual.html#artigo", "headline": "Como usar Secure Properties no MuleSoft (Mule 4)", "description": "Passo a passo para criptografar propriedades e usá-las no Mule 4: módulo, YAML, Secure Properties Config, ${secure::...} e a chave no Studio e CloudHub.", "inLanguage": "pt-BR", "url": "https://infosulst.com.br/properties/manual.html", "mainEntityOfPage": "https://infosulst.com.br/properties/manual.html", "image": "https://infosulst.com.br/properties/og-image.png", "dateModified": "2026-11-19", "datePublished": "2026-11-19", "proficiencyLevel": "Beginner", "author": {"@id": "https://infosulst.com.br/properties/#autor"}, "publisher": {"@id": "https://infosulst.com.br/properties/#autor"}, "about": [{"@type": "Organization", "name": "MuleSoft", "url": "https://www.mulesoft.com/"}, {"@type": "Organization", "name": "Salesforce", "url": "https://www.salesforce.com/"}, {"@type": "Thing", "name": "Secure Properties"}], "isPartOf": {"@id": "https://infosulst.com.br/properties/#website"}}, {"@type": "Person", "@id": "https://infosulst.com.br/properties/#autor", "name": "Rodolfo Portella", "alternateName": "RSPortella", "url": "https://github.com/rsportella", "sameAs": ["https://github.com/rsportella", "https://www.linkedin.com/in/rsportella/", "https://www.instagram.com/rsportella/"]}]}</script>
+<link rel="stylesheet" href="style.css"></head><body>
+<main class="wrap doc">
+  <header class="hero">
+    <nav class="crumbs" aria-label="Você está aqui"><a href="./">Secure Properties Generator</a><span aria-hidden="true">›</span><span aria-current="page">Manual</span></nav>
+    <h1>Manual: como usar Secure Properties no MuleSoft</h1>
+    <p class="lead">Passo a passo para gerar propriedades seguras no painel e usá-las em uma aplicação Mule 4, no Anypoint Studio e no CloudHub.</p>
+  </header>
+
+  <nav class="toc card" aria-label="Índice">
+    <strong>Neste manual</strong>
+    <ol>
+      <li><a href="#painel">Parte 1: usando o painel</a></li>
+      <li><a href="#aplicacao">Parte 2: usando na aplicação Mule</a></li>
+      <li><a href="#erros">Erros comuns e como resolver</a></li>
+      <li><a href="#boas-praticas">Boas práticas de segurança</a></li>
+    </ol>
+  </nav>
+
+  <section class="card doc-sec" id="painel">
+    <h2><span class="num">1</span> Usando o painel</h2>
+    <p>O painel criptografa e descriptografa direto no seu navegador. A chave e os valores não são enviados para nenhum servidor.</p>
+
+    <h3>1.1 Antes de começar: decida a chave e as opções</h3>
+    <p>Anote quatro informações. <strong>Elas precisam ser exatamente as mesmas na aplicação Mule</strong>, senão a descriptografia falha:</p>
+    <ul>
+      <li><strong>Chave:</strong> texto secreto de no mínimo 16 caracteres. Com exatamente 32 caracteres o AES usa 256 bits; com 16, usa 128 bits.</li>
+      <li><strong>Algoritmo:</strong> AES, Blowfish, DES, DESede ou RC2. Na dúvida, use <strong>AES</strong>, que é o padrão do Mule.</li>
+      <li><strong>Mode:</strong> CBC, CFB, ECB ou OFB. O padrão do Mule é <strong>CBC</strong>.</li>
+      <li><strong>IV aleatório:</strong> ligado ou desligado. O padrão do Mule é desligado.</li>
+    </ul>
+    <div class="note"><strong>Dica:</strong> para projetos novos, use AES, CBC, IV aleatório ligado e uma chave de 32 caracteres. Os exemplos abaixo usam uma chave de demonstração (<code>1234567890123456</code>): <strong>nunca use essa chave em produção</strong>.</div>
+
+    <h3>1.2 Criptografar um valor (aba String)</h3>
+    <ol class="steps">
+      <li>Abra o painel e deixe a aba <strong>String</strong> selecionada.</li>
+      <li>Em <strong>Operação</strong>, escolha <strong>Encrypt</strong>.</li>
+      <li>Escolha o <strong>Algoritmo</strong> e o <strong>Mode</strong> e, se quiser, ligue <strong>Usar random IV</strong>.</li>
+      <li>Digite a <strong>Key</strong> (a chave secreta).</li>
+      <li>No campo <strong>Value</strong>, escreva o valor que quer proteger, por exemplo a senha do banco.</li>
+      <li>Clique em <strong>Gerar</strong> e depois no ícone de copiar, no canto direito do campo <strong>Resultado</strong>.</li>
+    </ol>
+    <p>O resultado vem no formato que o Mule entende. Com AES, CBC, sem IV aleatório, a chave de demonstração e o valor <code>hello world</code>, você obtém:</p>
+    <pre class="code"><code>![bAx40eFUVf/hIxbaV8/GaQ==]</code></pre>
+    <p>Esse texto, com o <code>![</code> no início e o <code>]</code> no final, é o que vai dentro do arquivo de propriedades.</p>
+
+    <h3>1.3 Conferir um valor (descriptografar)</h3>
+    <ol class="steps">
+      <li>Em <strong>Operação</strong>, escolha <strong>Decrypt</strong>.</li>
+      <li>Use o mesmo algoritmo, mode, IV aleatório e chave da criptografia.</li>
+      <li>Cole o valor em <strong>Value</strong>, com ou sem o <code>![...]</code>, e clique em <strong>Gerar</strong>.</li>
+    </ol>
+    <p>Se a chave ou as opções estiverem diferentes, aparece uma mensagem de erro em vermelho, ou um texto sem sentido.</p>
+
+    <h3>1.4 Criptografar um arquivo YAML inteiro (aba YAML)</h3>
+    <p>Use quando você tem várias propriedades de uma vez.</p>
+    <ol class="steps">
+      <li>Abra a aba <strong>YAML</strong>.</li>
+      <li>Escolha <strong>Encrypt</strong>, o algoritmo, o mode, o IV aleatório e digite a <strong>Key</strong>.</li>
+      <li>Selecione o arquivo em <strong>Arquivo YAML</strong> ou cole o conteúdo no campo <strong>Conteúdo</strong>.</li>
+      <li>Clique em <strong>Processar YAML</strong>. Todos os valores do tipo <code>chave: valor</code> viram <code>![...]</code>. Comentários, listas e linhas vazias são mantidos.</li>
+      <li>Clique em <strong>Baixar resultado</strong> para salvar o arquivo.</li>
+    </ol>
+    <p>Exemplo, antes e depois:</p>
+    <pre class="code"><code># antes
+db:
+  host: localhost
+  password: hello world</code></pre>
+    <pre class="code"><code># depois
+db:
+  host: ![xxxxxxxxxxxxxxxxxxxxxx==]
+  password: ![bAx40eFUVf/hIxbaV8/GaQ==]</code></pre>
+    <div class="note"><strong>Dica:</strong> o painel criptografa <em>todos</em> os valores do arquivo. Para proteger só o que é sensível (senhas, tokens, chaves de API), coloque essas propriedades em um arquivo separado, por exemplo <code>secure-config.yaml</code>, e mantenha as demais em um arquivo comum.</div>
+    <p>Para ler um arquivo já criptografado, escolha <strong>Decrypt</strong>, informe a mesma chave e as mesmas opções e clique em <strong>Processar YAML</strong>.</p>
+
+    <h3>1.5 A aba "Arquivo inteiro"</h3>
+    <p>Criptografa qualquer arquivo e gera um arquivo <code>.encrypted</code> em Base64. É útil para guardar arquivos com segurança e descriptografá-los depois aqui mesmo.</p>
+    <div class="warn"><strong>Atenção:</strong> este formato não foi validado contra a opção <code>fileLevelEncryption</code> do Mule. Para usar na aplicação Mule, prefira as abas <strong>String</strong> e <strong>YAML</strong>.</div>
+  </section>
+
+  <section class="card doc-sec" id="aplicacao">
+    <h2><span class="num">2</span> Usando na aplicação Mule 4</h2>
+    <p>Com os valores criptografados em mãos, siga os passos abaixo no seu projeto.</p>
+
+    <h3>2.1 Adicionar o módulo Secure Configuration Properties</h3>
+    <p><strong>No Anypoint Studio:</strong> abra a <em>Mule Palette</em>, clique em <strong>Search in Exchange</strong>, procure por <strong>Mule Secure Configuration Property Extension</strong> e adicione ao projeto.</p>
+    <p><strong>Direto no <code>pom.xml</code>:</strong> adicione a dependência abaixo e troque <code>VERSAO</code> pela versão mais recente listada no
+      <a href="https://anypoint.mulesoft.com/exchange/com.mulesoft.modules/mule-secure-configuration-property-module/" target="_blank" rel="noopener">Exchange</a>.</p>
+    <pre class="code"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.mulesoft.modules&lt;/groupId&gt;
+  &lt;artifactId&gt;mule-secure-configuration-property-module&lt;/artifactId&gt;
+  &lt;version&gt;VERSAO&lt;/version&gt;
+  &lt;classifier&gt;mule-plugin&lt;/classifier&gt;
+&lt;/dependency&gt;</code></pre>
+
+    <h3>2.2 Criar o arquivo de propriedades seguras</h3>
+    <p>Em <code>src/main/resources</code>, crie o arquivo (por exemplo <code>secure-config.yaml</code>) com os valores gerados no painel. <strong>Coloque o valor entre aspas</strong> e não deixe espaços antes ou depois do <code>]</code>:</p>
+    <pre class="code"><code>db:
+  host: &quot;localhost&quot;
+  password: &quot;![bAx40eFUVf/hIxbaV8/GaQ==]&quot;</code></pre>
+    <div class="warn"><strong>Atenção:</strong> um espaço depois do <code>]</code> faz a descriptografia falhar.</div>
+
+    <h3>2.3 Configurar o Secure Properties Config</h3>
+    <p>No Studio: <em>Global Elements</em> &rarr; <strong>Create</strong> &rarr; <strong>Secure Properties Config</strong>. No XML, o resultado é este:</p>
+    <pre class="code"><code>&lt;mule xmlns=&quot;http://www.mulesoft.org/schema/mule/core&quot;
+      xmlns:secure-properties=&quot;http://www.mulesoft.org/schema/mule/secure-properties&quot;
+      xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+      xsi:schemaLocation=&quot;http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+        http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd&quot;&gt;
+
+  &lt;secure-properties:config name=&quot;Secure_Properties_Config&quot;
+      file=&quot;secure-config.yaml&quot; key=&quot;${mule.key}&quot;&gt;
+    &lt;secure-properties:encrypt algorithm=&quot;AES&quot; mode=&quot;CBC&quot;/&gt;
+  &lt;/secure-properties:config&gt;
+
+&lt;/mule&gt;</code></pre>
+    <p>Pontos importantes:</p>
+    <ul>
+      <li><code>file</code>: o nome do arquivo criado no passo anterior.</li>
+      <li><code>key</code>: não escreva a chave aqui. Use um placeholder como <code>${mule.key}</code>, que será preenchido na execução (passo 2.5).</li>
+      <li><code>algorithm</code> e <code>mode</code> precisam ser os mesmos escolhidos no painel (AES e CBC são os padrões).</li>
+      <li>Se você ligou <strong>Usar random IV</strong> no painel, use <code>&lt;secure-properties:encrypt algorithm="AES" mode="CBC" useRandomIVs="true"/&gt;</code>.</li>
+      <li>A tag <code>&lt;secure-properties:encrypt/&gt;</code> é obrigatória, mesmo quando você usa os valores padrão.</li>
+    </ul>
+
+    <h3>2.4 Usar as propriedades no fluxo</h3>
+    <p>Para ler qualquer valor do arquivo seguro, use o prefixo <code>secure::</code>. Isso vale também para valores que não estão criptografados no mesmo arquivo:</p>
+    <pre class="code"><code>&lt;db:config name=&quot;Database_Config&quot;&gt;
+  &lt;db:my-sql-connection
+      host=&quot;${secure::db.host}&quot;
+      port=&quot;3306&quot;
+      user=&quot;app_user&quot;
+      password=&quot;${secure::db.password}&quot;
+      database=&quot;minha_base&quot;/&gt;
+&lt;/db:config&gt;
+
+&lt;flow name=&quot;exemplo-flow&quot;&gt;
+  &lt;set-payload value=&quot;${secure::db.password}&quot;/&gt;
+&lt;/flow&gt;</code></pre>
+    <p>Propriedades normais continuam sendo lidas sem prefixo, como <code>${http.port}</code>.</p>
+
+    <h3>2.5 Informar a chave ao executar a aplicação</h3>
+    <p>A chave <strong>não</strong> vai no código. Ela é passada quando a aplicação sobe, com o mesmo nome que você usou em <code>key="${mule.key}"</code>:</p>
+    <table class="tbl">
+      <thead><tr><th>Onde roda</th><th>Como informar</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Anypoint Studio</strong></td><td><em>Run As</em> &rarr; <em>Run Configurations</em> &rarr; aba <em>Arguments</em> &rarr; campo <em>VM arguments</em>: <code>-Dmule.key=SUA_CHAVE</code></td></tr>
+        <tr><td><strong>Mule on-premises (linha de comando)</strong></td><td><code>mule -M-Dmule.key=SUA_CHAVE</code></td></tr>
+        <tr><td><strong>Mule on-premises (wrapper.conf)</strong></td><td>No <code>$MULE_HOME/conf/wrapper.conf</code>: <code>wrapper.java.additional.999=-Dmule.key=SUA_CHAVE</code></td></tr>
+        <tr><td><strong>CloudHub / Runtime Manager</strong></td><td>Veja o passo 2.6 abaixo: lá a chave e as propriedades têm regras próprias.</td></tr>
+      </tbody>
+    </table>
+
+        <h3>2.6 No CloudHub (Runtime Manager): chave e propriedades</h3>
+    <p>No CloudHub 1.0 os valores criptografados (<code>![...]</code>) ficam <strong>dentro do arquivo YAML empacotado no .jar</strong> e não aparecem na aba <em>Properties</em>. No Runtime Manager você cadastra a <strong>chave</strong> e, quando precisar, <strong>sobrescreve</strong> uma propriedade.</p>
+    <p><strong>a) Esconder a chave e as propriedades sensíveis.</strong> Liste os nomes no <code>mule-artifact.json</code> do projeto, no campo <code>secureProperties</code> (adicione o campo ao arquivo que já existe):</p>
+    <pre class="code"><code>&quot;secureProperties&quot;: [&quot;secure.key&quot;, &quot;secure::db.password&quot;]</code></pre>
+    <p>Os nomes listados ficam mascarados no Runtime Manager e continuam assim mesmo se forem removidos do arquivo depois. Use em <code>key="${secure.key}"</code> o mesmo nome que você listar aqui.</p>
+    <p><strong>b) Cadastrar a chave.</strong> Em <em>Runtime Manager</em> &rarr; <em>Applications</em> &rarr; (sua aplicação) &rarr; <em>Settings</em> &rarr; aba <em>Properties</em>, adicione a propriedade <code>secure.key</code> com o valor da chave e aplique a mudança.</p>
+    <p><strong>c) Sobrescrever uma propriedade segura (opcional).</strong> Na mesma aba <em>Properties</em>, escreva o <strong>nome com o prefixo <code>secure::</code></strong> e informe o <strong>valor em texto puro, sem criptografia e sem o <code>![ ]</code></strong>:</p>
+    <table class="tbl">
+      <thead><tr><th>Modo de edição</th><th>Como escrever o nome</th></tr></thead>
+      <tbody>
+        <tr><td><em>Table View</em></td><td><code>secure::db.password</code> (sem escapar os dois-pontos)</td></tr>
+        <tr><td><em>Text View</em></td><td><code>secure\:\:db.password</code> (escape os dois-pontos com barra invertida)</td></tr>
+      </tbody>
+    </table>
+    <div class="warn"><strong>Importante:</strong> segundo a documentação da MuleSoft, ao sobrescrever uma propriedade segura no Runtime Manager o valor <strong>não deve estar criptografado</strong>. O formato <code>![...]</code> só é usado dentro do arquivo YAML. A documentação não descreve colar no Runtime Manager o valor já criptografado (mesmo sem o <code>![ ]</code>), então esse caminho não está garantido: teste antes em um ambiente de desenvolvimento.</div>
+    <p><strong>CloudHub 2.0:</strong> o <code>secureProperties</code> do <code>mule-artifact.json</code> não mascara valores. Em <em>Properties</em> (Table View), preencha <em>New Key</em> e <em>New Value</em>, clique em <strong>Protect</strong> &rarr; <strong>Protect value</strong> e depois em <em>Apply Changes</em> (ou <em>Deploy Application</em>, se ainda não estiver publicada). As propriedades do Runtime Manager têm precedência sobre as do arquivo empacotado.</p>
+    <p class="small">Referências: <a href="https://docs.mulesoft.com/cloudhub/secure-application-properties" target="_blank" rel="noopener">Safely Hide Application Properties</a> (CloudHub 1.0) e <a href="https://docs.mulesoft.com/cloudhub-2/ch2-protect-app-props" target="_blank" rel="noopener">Protecting App Property Values</a> (CloudHub 2.0).</p>
+
+    <h3>2.7 Testar</h3>
+    <ol class="steps">
+      <li>Execute a aplicação com a chave informada.</li>
+      <li>Dispare o fluxo (por exemplo, uma chamada HTTP) e verifique se a conexão com o banco ou a resposta usa o valor correto.</li>
+      <li>Se algo falhar, consulte a seção de erros comuns abaixo.</li>
+    </ol>
+  </section>
+
+  <section class="card doc-sec" id="erros">
+    <h2><span class="num">3</span> Erros comuns e como resolver</h2>
+    <table class="tbl">
+      <thead><tr><th>Sintoma</th><th>Causa provável</th><th>Solução</th></tr></thead>
+      <tbody>
+        <tr><td>Erro ao descriptografar ou valor ilegível</td><td>Chave diferente da usada no painel</td><td>Use exatamente a mesma chave, sem espaços sobrando no início ou no fim.</td></tr>
+        <tr><td>Mesmo erro, com a chave correta</td><td>Algoritmo, mode ou IV aleatório diferentes</td><td>Confira <code>algorithm</code>, <code>mode</code> e <code>useRandomIVs</code> no <code>&lt;secure-properties:encrypt&gt;</code>.</td></tr>
+        <tr><td>Falha em um valor específico</td><td>Espaço depois do <code>]</code> ou valor sem aspas no YAML</td><td>Escreva <code>"![...]"</code> entre aspas e sem espaços sobrando.</td></tr>
+        <tr><td>Aparece o texto <code>${secure::...}</code> literal</td><td>Config não carregado ou arquivo com nome errado</td><td>Confira o <code>file</code> do config e se o arquivo está em <code>src/main/resources</code>.</td></tr>
+        <tr><td>Propriedade não encontrada</td><td>Faltou o prefixo <code>secure::</code></td><td>Use <code>${secure::nome}</code> para tudo que está no arquivo seguro.</td></tr>
+        <tr><td>Chave inválida no painel</td><td>Menos de 16 caracteres (24 para DESede)</td><td>Use uma chave maior. Para AES-256, use exatamente 32 caracteres.</td></tr>
+        <tr><td>Acentos ou símbolos no lugar errado</td><td>Chave com caracteres especiais</td><td>A chave é lida em UTF-8 e o tamanho conta em bytes. Prefira letras, números e símbolos simples.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="card doc-sec" id="boas-praticas">
+    <h2><span class="num">4</span> Boas práticas de segurança</h2>
+    <ul class="checks">
+      <li><strong>Nunca</strong> coloque a chave no repositório, no XML ou em arquivo de propriedades da aplicação.</li>
+      <li>Use <strong>uma chave diferente por ambiente</strong> (desenvolvimento, homologação, produção).</li>
+      <li>Guarde as chaves em um cofre de senhas e injete-as só no momento do deploy.</li>
+      <li>Criptografe apenas o que é sensível; o resto pode ficar em um arquivo comum.</li>
+      <li>Lembre que quem consegue listar os processos do servidor (<code>ps</code>) ou abrir o console Java pode ver valores já descriptografados. Restrinja o acesso à máquina.</li>
+      <li>Em projetos novos, prefira <strong>AES/CBC com IV aleatório</strong> e uma chave de 32 caracteres. DES, RC2 e o modo ECB existem só por compatibilidade.</li>
+      <li>Propriedades seguras podem depender de outras propriedades seguras, mas não de propriedades comuns do Mule.</li>
+    </ul>
+    <p class="small">Referência oficial: <a href="https://docs.mulesoft.com/mule-runtime/latest/secure-configuration-properties" target="_blank" rel="noopener">Secure Configuration Properties (docs.mulesoft.com)</a>.</p>
+  </section>
+</main>
+
+<footer class="footer">
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-github" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.07 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3" /></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="3" /><path d="m3.5 6.5 8.5 6.5 8.5-6.5" /></symbol><symbol id="i-linkedin" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" /></symbol><symbol id="i-instagram" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5" /><circle cx="12" cy="12" r="4.3" /><circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" stroke="none" /></symbol></defs></svg>
+  <div class="footer-in">
+    <div class="app-footer-brand"><span class="app-footer-icon" aria-hidden="true"><svg class="icon" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span><strong>MuleSoft Secure Properties Generator</strong></span></div>
+    <p>Criado e mantido por <strong>RSPortella</strong> <span class="app-footer-sep" aria-hidden="true">·</span> <a href="https://github.com/rsportella/sf-properties/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">Código aberto sob a licença MIT</a></p>
+    <nav class="app-footer-social" aria-label="RSPortella nas redes">
+      <a class="social-link social-github" href="https://github.com/rsportella" target="_blank" rel="noopener noreferrer" aria-label="GitHub de RSPortella" title="GitHub"><svg class="icon" aria-hidden="true"><use href="#i-github"/></svg></a>
+      <a class="social-link social-linkedin" href="https://www.linkedin.com/in/rsportella/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de RSPortella" title="LinkedIn"><svg class="icon" aria-hidden="true"><use href="#i-linkedin"/></svg></a>
+      <a class="social-link social-instagram" href="https://www.instagram.com/rsportella/" target="_blank" rel="noopener noreferrer" aria-label="Instagram de RSPortella" title="Instagram"><svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg></a>
+      <a class="social-link social-mail" href="mailto:rodolfosportella@gmail.com" aria-label="Enviar e-mail para RSPortella (rodolfosportella@gmail.com)" title="rodolfosportella@gmail.com"><svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg></a>
+    </nav>
+    <div class="compat"><strong>Compatibilidade implementada:</strong> AES, Blowfish, DES, DESede (Triple DES) e RC2, nos modes CBC/CFB/ECB/OFB com padding PKCS5/PKCS7, com ou sem <code>--use-random-iv</code>, no mesmo formato Base64 usado pelo SecurePropertiesTool. Sem IV aleatório, o IV é fixo = os primeiros bytes da chave (16 para AES, 8 para os demais). ECB não usa IV.</div>
+  </div>
+  <div class="legal"><span>© 2026 Rodolfo Portella</span><span>MuleSoft e Salesforce são marcas de seus respectivos titulares; uso apenas para indicar compatibilidade, sem vínculo ou endosso.</span></div>
+</footer>
+<script src="manual.js" defer></script>
+<script src="analytics.js" defer></script>
+</body></html>

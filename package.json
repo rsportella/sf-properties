@@ -1,0 +1,18 @@
+{
+  "name": "mulesoft-secure-properties-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gerador de propriedades seguras do MuleSoft que roda 100% no navegador.",
+  "license": "MIT",
+  "author": "Rodolfo Portella <rodolfosportella@gmail.com> (https://github.com/rsportella)",
+  "repository": { "type": "git", "url": "git+https://github.com/rsportella/sf-properties.git" },
+  "scripts": {
+    "build": "esbuild src/crypto-entry.js --bundle --format=iife --platform=browser --minify --outfile=crypto.bundle.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "egoroof-blowfish": "4.0.3",
+    "esbuild": "0.28.2",
+    "node-forge": "1.4.0"
+  }
+}
