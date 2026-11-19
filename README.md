@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/icon.svg" width="88" height="88" alt="" />
+<img src="assets/img/icon.svg" width="88" height="88" alt="" />
 
 # MuleSoft Secure Properties Generator
 
@@ -17,7 +17,7 @@ para lugar nenhum.
 
 <br />
 
-<img src="docs/painel-string.png" alt="Painel na aba String: algoritmo AES, mode CBC, chave oculta com botão de mostrar, valor de entrada e o resultado ![...] com o botão de copiar dentro do campo" width="100%" />
+<img src="assets/img/painel-string.png" alt="Painel na aba String: algoritmo AES, mode CBC, chave oculta com botão de mostrar, valor de entrada e o resultado ![...] com o botão de copiar dentro do campo" width="100%" />
 
 </div>
 
@@ -45,7 +45,7 @@ Principais pontos:
 - [Manual passo a passo](manual.html) de como usar o painel e como configurar a aplicação Mule.
 
 <div align="center">
-  <img src="docs/painel-yaml.png" alt="Painel na aba YAML: arquivo de credenciais com os valores trocados por ![...], mantendo o comentário" width="100%" />
+  <img src="assets/img/painel-yaml.png" alt="Painel na aba YAML: arquivo de credenciais com os valores trocados por ![...], mantendo o comentário" width="100%" />
 </div>
 
 ## Como usar
@@ -130,7 +130,7 @@ Mule, use as abas **String** e **YAML**.
 
 ## Métricas de uso (opcional)
 
-O `analytics.js` integra o Google Analytics 4 com banner de consentimento (LGPD). Ele só age se houver um
+O `assets/js/analytics.js` integra o Google Analytics 4 com banner de consentimento (LGPD). Ele só age se houver um
 ID configurado na constante `GA_ID`, no topo do arquivo. Se você faz fork e não quer métricas, deixe o
 valor vazio (`''`).
 
@@ -144,21 +144,31 @@ valor vazio (`''`).
 
 ```
 .
-├── index.html              # página da ferramenta (SEO e meta tags)
-├── manual.html             # manual passo a passo (painel e aplicação Mule)
-├── style.css               # estilos e animações
-├── app.js                  # lógica da interface (abas, YAML, arquivos)
-├── toast.js                # notificações de erro no estilo iOS
-├── effects.js              # efeitos visuais, copiar resultado, mostrar/ocultar chave
-├── manual.js               # botão de copiar nos blocos de código do manual
-├── analytics.js            # Google Analytics 4 com consentimento
-├── crypto.bundle.js        # motor de criptografia (gerado, não edite)
-├── src/crypto-entry.js     # fonte do motor de criptografia
-├── docs/                   # imagens e ícones do README
-├── og-image.png            # imagem de compartilhamento (1200×630)
-├── sitemap.xml · robots.txt
-├── favicon.svg · apple-touch-icon.png
-└── ...
+├── index.html                  # página da ferramenta (SEO, meta tags e conteúdo)
+├── manual.html                 # manual passo a passo (painel e aplicação Mule)
+├── robots.txt
+├── sitemap.xml
+├── assets/
+│   ├── css/
+│   │   └── style.css           # estilos e animações
+│   ├── js/
+│   │   ├── app.js              # lógica da interface (abas, YAML, arquivos)
+│   │   ├── toast.js            # notificações de erro no estilo iOS
+│   │   ├── effects.js          # efeitos visuais, copiar resultado, mostrar/ocultar chave
+│   │   ├── manual.js           # botão de copiar nos blocos de código do manual
+│   │   ├── analytics.js        # Google Analytics 4 com consentimento
+│   │   └── crypto.bundle.js    # motor de criptografia (gerado, não edite)
+│   └── img/
+│       ├── og-image.png        # imagem de compartilhamento (1200×630)
+│       ├── favicon.svg
+│       ├── apple-touch-icon.png
+│       ├── icon.svg            # ícone do README
+│       ├── painel-*.png        # capturas de tela do README
+│       └── *.svg               # ícones de redes sociais
+├── src/
+│   └── crypto-entry.js         # fonte do motor de criptografia
+├── LICENSE
+└── THIRD-PARTY-NOTICES.md
 ```
 
 ## Publicação e SEO
@@ -172,7 +182,7 @@ O `robots.txt` só vale na raiz do domínio. Se o site fica em uma subpasta (`/p
 
 ## Desenvolvimento
 
-O `crypto.bundle.js` é gerado a partir do `src/crypto-entry.js`. Só é preciso refazê-lo se você mexer no
+O `assets/js/crypto.bundle.js` é gerado a partir do `src/crypto-entry.js`. Só é preciso refazê-lo se você mexer no
 motor de criptografia:
 
 ```bash
@@ -180,7 +190,7 @@ npm install
 npm run build
 ```
 
-O restante (HTML, CSS e `app.js`) é editado direto, sem etapa de build.
+O restante (HTML, CSS e JavaScript em `assets/`) é editado direto, sem etapa de build.
 
 ## Bibliotecas de terceiros
 
@@ -206,13 +216,13 @@ empresas nem endosso delas; os nomes são usados apenas para indicar compatibili
 <div align="center">
   <sub>Desenvolvido por <strong>RSPortella</strong></sub>
   <br /><br />
-  <a href="https://github.com/rsportella" title="GitHub"><img src="docs/github.svg" width="28" height="28" alt="GitHub" /></a>
+  <a href="https://github.com/rsportella" title="GitHub"><img src="assets/img/github.svg" width="28" height="28" alt="GitHub" /></a>
   &nbsp;
-  <a href="https://www.linkedin.com/in/rsportella/" title="LinkedIn"><img src="docs/linkedin.svg" width="28" height="28" alt="LinkedIn" /></a>
+  <a href="https://www.linkedin.com/in/rsportella/" title="LinkedIn"><img src="assets/img/linkedin.svg" width="28" height="28" alt="LinkedIn" /></a>
   &nbsp;
-  <a href="https://www.instagram.com/rsportella/" title="Instagram"><img src="docs/instagram.svg" width="28" height="28" alt="Instagram" /></a>
+  <a href="https://www.instagram.com/rsportella/" title="Instagram"><img src="assets/img/instagram.svg" width="28" height="28" alt="Instagram" /></a>
   &nbsp;
-  <a href="mailto:rodolfosportella@gmail.com" title="rodolfosportella@gmail.com"><img src="docs/email.svg" width="28" height="28" alt="E-mail" /></a>
+  <a href="mailto:rodolfosportella@gmail.com" title="rodolfosportella@gmail.com"><img src="assets/img/email.svg" width="28" height="28" alt="E-mail" /></a>
   <br />
   <sub><a href="mailto:rodolfosportella@gmail.com">rodolfosportella@gmail.com</a></sub>
 </div>

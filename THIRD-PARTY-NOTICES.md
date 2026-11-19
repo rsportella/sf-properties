@@ -1,6 +1,6 @@
 # Avisos de terceiros
 
-O arquivo `crypto.bundle.js` embute, de forma reduzida, as bibliotecas abaixo. Os textos de licença estão reproduzidos aqui.
+O arquivo `assets/js/crypto.bundle.js` embute, de forma reduzida, as bibliotecas abaixo. Os textos de licença estão reproduzidos aqui.
 
 ## node-forge (AES, DES, 3DES e RC2)
 

@@ -7,7 +7,7 @@
   "author": "Rodolfo Portella <rodolfosportella@gmail.com> (https://github.com/rsportella)",
   "repository": { "type": "git", "url": "git+https://github.com/rsportella/sf-properties.git" },
   "scripts": {
-    "build": "esbuild src/crypto-entry.js --bundle --format=iife --platform=browser --minify --outfile=crypto.bundle.js",
+    "build": "esbuild src/crypto-entry.js --bundle --format=iife --platform=browser --minify --outfile=assets/js/crypto.bundle.js",
     "serve": "python3 -m http.server 8000"
   },
   "devDependencies": {
